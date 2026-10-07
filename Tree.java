@@ -1,3 +1,5 @@
+import javax.swing.tree.TreeNode;
+
 class Node {
         char data;
         Node leftChild;
@@ -20,6 +22,30 @@ public class Tree {
 
     // generate tree/individual with a specified max depth
     public void generate_individual(int depth) {
+
+        if (depth <= 1) {
+        return;
+        }
+
+        // Always create a left child to guarantee the required depth
+        node.left = new TreeNode(); 
+        //randomizing what the value in the node will be not sure about this logic
+        // Randomly decide 50/50 chance whether to create a right child
+
+        if (Math.random() < 0.5) {
+            node.right = new TreeNode();
+        }
+
+        //Left child will always be created 
+        generateTree(node.left, depth - 1);
+
+        if (node.right != null) {
+            generateTree(node.right, depth - 1);
+        }
+        }
+
+     
+
 
     }
 
