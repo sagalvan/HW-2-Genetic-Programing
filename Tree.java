@@ -24,8 +24,26 @@ public class Tree {
     }
 
     // Add node to tree
-    public void add_node() {
-
+    public void add_node(char data) {
+        // if data is not in our function set or variable set, return error
+        // otherwise:
+        // Find a leaf node to add to.
+        // if root is null, add the node to the root
+        if (root == null) {
+            root = new Node(data);
+        }
+        // if the root is not null
+        else{
+            Node current = root;
+            while(current.leftChild != null){
+            }
+        //      current node = root
+        //      while the left node is not null || the right node is not null
+        //          if (left node == null)
+        //              current.left = new Node(data)
+        //          else if (right node == null)
+        //              current.left = new Node(data)
+        
     } 
 
     // Mutate, which happens in lower level nodes
