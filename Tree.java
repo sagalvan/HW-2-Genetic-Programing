@@ -35,7 +35,8 @@ public class Tree {
 
     private Node buildNode(int depth) {
 
-        if (depth == 0){
+        double chanceRight = Math.random();
+        if (depth == 0 || chanceRight < 0.3){
             return new Node (randomTerminal());
         }
 
@@ -63,9 +64,9 @@ public class Tree {
 
     //Print out the finished tree
 
-        public void print(){
-        printNode(root);
-        System.out.println();
+    public void print(){
+    printNode(root);
+    System.out.println();
     }
 
     private void printNode(Node node) {
@@ -79,6 +80,11 @@ public class Tree {
             printNode(node.rightChild);
             System.out.print(")");
         }
+    }
+
+    //Plug in the value of x to evaluate the trees output
+    public void evaluate(double variable){
+        
     }
 
 
