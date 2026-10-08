@@ -56,7 +56,7 @@ public class Tree {
         return functions[random.nextInt(functions.length)];
     }
 
-    //Random picks terminal node 
+    //Randomly picks terminal node 
     private char randomTerminal(){
         return terminals[random.nextInt(terminals.length)];
     }
@@ -83,8 +83,10 @@ public class Tree {
     }
 
     //Plug in the value of x to evaluate the trees output
-    public void evaluate(double variable){
-        
+    public void evaluate(double replacement, Node node){
+        if (node.leftChild == null){
+
+        }
     }
 
 
