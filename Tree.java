@@ -1,6 +1,4 @@
 import javax.swing.tree.TreeNode;
-import java.util.Random;
-
 
 class Node {
         char data;
@@ -15,9 +13,7 @@ class Node {
     }
 
 public class Tree {
-    
-    public Node root;
-    public int depth;
+    Node root;
     
 
     public Tree(){
@@ -26,37 +22,31 @@ public class Tree {
     }
 
     // generate tree/individual with a specified max depth
-    public Tree generate_individual(int depth) {
+    public void generate_individual(int depth) {
 
-        // if (depth <= 1) {
-        // return;
-        // }
+        if (depth <= 1) {
+        return;
+        }
 
-        // // Always create a left child to guarantee the required depth
-        // node.left = new TreeNode(); 
-        // //randomizing what the value in the node will be not sure about this logic
-        // // Randomly decide 50/50 chance whether to create a right child
+        // Always create a left child to guarantee the required depth
+        node.left = new TreeNode(); 
+        //randomizing what the value in the node will be not sure about this logic
+        // Randomly decide 50/50 chance whether to create a right child
 
-        // if (Math.random() < 0.5) {
-        //     node.right = new TreeNode();
-        // }
+        if (Math.random() < 0.5) {
+            node.right = new TreeNode();
+        }
 
-        // //Left child will always be created 
-        // generateTree(node.left, depth - 1);
+        //Left child will always be created 
+        generateTree(node.left, depth - 1);
 
-        // if (node.right != null) {
-        //     generateTree(node.right, depth - 1);
-        // }
-        // }
+        if (node.right != null) {
+            generateTree(node.right, depth - 1);
+        }
+        }
 
-        // initialize tree with Tree()
-        //
-        // while(this.depth != depth) {
-        //      Keep adding nodes to our tree
-        // }
-        // return tree
      
-        return null;
+
 
     }
 
@@ -74,7 +64,6 @@ public class Tree {
             Node current = root;
             while(current.leftChild != null){
             }
-        }
         //      current node = root
         //      while the left node is not null || the right node is not null
         //          if (left node == null)
@@ -140,10 +129,7 @@ public class Tree {
         return null;
     }
 
-    // Printing a readable version of this tree (for debugging & presentation purposes)
-    public void print() {
 
-    }
 
     // Functions to consider
     // - Searching with a specified depth: find a node at this depth
@@ -151,4 +137,10 @@ public class Tree {
     //     return null;
     // }
     // - Keeping track of depth when creating an individual
+
+    public static void main(String[] args) {
+    Tree t = new Tree();
+    t.generate_individual(3);
+    t.print();
+}
 }
