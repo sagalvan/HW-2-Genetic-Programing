@@ -1,4 +1,4 @@
-import javax.swing.tree.TreeNode;
+import java.util.Random;
 
 class Node {
         char data;
@@ -14,63 +14,73 @@ class Node {
 
 public class Tree {
     Node root;
+
+    static Random random = new Random();
+    static char[] functions = {'+', '-', '*', '/'};
+    static char[] terminals = {'x', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     
 
     public Tree(){
         this.root = null;
     }
 
-    // generate tree/individual with a specified max depth
+    // generate tree/individual with a specified depth
     public void generate_individual(int depth) {
+        
+        root = buildNode(depth);
 
-        if (depth <= 1) {
-        return;
+     }
+
+    // Add node to tree -> terminal values at leaf nodes and functions at everywhere else
+
+    private Node buildNode(int depth) {
+
+        if (depth == 0){
+            return new Node (randomTerminal());
         }
 
-        // Always create a left child to guarantee the required depth
-        node.left = new TreeNode(); 
-        //randomizing what the value in the node will be not sure about this logic
-        // Randomly decide 50/50 chance whether to create a right child
+        //if not this node is an operation, so it must have 2 children
+        Node node = new Node(randomFunction());
+        node.leftChild = buildNode(depth - 1);
+        node.rightChild = buildNode(depth - 1);
+        return node;
 
-        if (Math.random() < 0.5) {
-            node.right = new TreeNode();
-        }
-
-        //Left child will always be created 
-        generateTree(node.left, depth - 1);
-
-        if (node.right != null) {
-            generateTree(node.right, depth - 1);
-        }
-        }
-
-     
 
 
     }
 
-    // Add node to tree
-    public void add_node(char data) {
-        // if data is not in our function set or variable set, return error
-        // otherwise:
-        // Find a leaf node to add to.
-        // if root is null, add the node to the root
-        if (root == null) {
-            root = new Node(data);
+
+    //Randomly picks function
+    private char randomFunction(){
+        return functions[random.nextInt(functions.length)];
+    }
+
+    //Random picks terminal node 
+    private char randomTerminal(){
+        return terminals[random.nextInt(terminals.length)];
+    }
+
+
+    //Print out the finished tree
+
+        public void print(){
+        printNode(root);
+        System.out.println();
+    }
+
+    private void printNode(Node node) {
+        if (node == null) return;
+        if (node.leftChild == null) {      // leaf
+            System.out.print(node.data);
+        } else {                           // operator
+            System.out.print("(");
+            printNode(node.leftChild);
+            System.out.print(" " + node.data + " ");
+            printNode(node.rightChild);
+            System.out.print(")");
         }
-        // if the root is not null
-        else{
-            Node current = root;
-            while(current.leftChild != null){
-            }
-        //      current node = root
-        //      while the left node is not null || the right node is not null
-        //          if (left node == null)
-        //              current.left = new Node(data)
-        //          else if (right node == null)
-        //              current.left = new Node(data)
-        
-    } 
+    }
+
 
     // Mutate, which happens in lower level nodes
     public Tree mutate(){
@@ -82,10 +92,7 @@ public class Tree {
         return null;
     }
 
-    // Printing a readable version of this tree (for debugging & presentation purposes)
-    public void print() {
 
-    }
 
     // Functions to consider
     // - Searching with a specified depth: find a node at this depth
@@ -93,4 +100,10 @@ public class Tree {
     //     return null;
     // }
     // - Keeping track of depth when creating an individual
+
+    public static void main(String[] args) {
+    Tree t = new Tree();
+    t.generate_individual(3);
+    t.print();
+}
 }
