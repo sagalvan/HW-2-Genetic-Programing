@@ -15,6 +15,7 @@ class Node {
 
 public class Tree {
     Node root;
+    int depth;
 
     static Random random = new Random();
     static char[] functions = {'+', '-', '*', '/'};
@@ -23,11 +24,12 @@ public class Tree {
 
     public Tree(){
         this.root = null;
+        this.depth = 0;
     }
 
     // generate tree/individual with a specified depth
     public void generate_individual(int depth) {
-        
+        this.depth = depth;
         root = buildNode(depth);
 
      }
@@ -172,9 +174,9 @@ public class Tree {
     // - Keeping track of depth when creating an individual
 
     public static void main(String[] args) {
-    Tree t = new Tree();
-    t.generate_individual(3);
-    t.print();
+        Tree t = new Tree();
+        t.generate_individual(3);
+        t.print();
     }
 }
 
