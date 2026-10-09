@@ -66,8 +66,8 @@ public class Tree {
     //Print out the finished tree
 
     public void print(){
-    printNode(root);
-    System.out.println();
+        printNode(root);
+        System.out.println();
     }
 
     private void printNode(Node node) {
