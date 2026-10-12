@@ -24,8 +24,8 @@ public class Tree {
 
     public Tree(){
         this.root = null;
-        this.depth = 0;
-    }
+        this.depth = 0;   
+     }
 
     // generate tree/individual with a specified depth
     public void generate_individual(int depth) {
@@ -68,12 +68,13 @@ public class Tree {
     //Print out the finished tree
 
     public void print(){
-        printNode(root);
-        System.out.println();
+    printNode(root);
+    System.out.println();
     }
 
     private void printNode(Node node) {
-        if (node == null) return;
+        if (node == null) 
+            return;
         if (node.leftChild == null) {      // leaf
             System.out.print(node.data);
         } else {                           // operator
@@ -109,8 +110,36 @@ public class Tree {
 
 
     // Mutate, which happens in lower level nodes
-    public Tree mutate(){
+    //Working on this logic...
+    public Tree mutate(Node node){
+        double chanceMutate = Math.random();
+        if (chanceMutate >= 0.2){
+
+        }
+        
         return null;
+    }
+
+    ///Creates a new tree to mutate/crossover 
+    
+    public void newTree(){
+        buildCopy(root);
+    }
+
+
+    public Tree buildCopy(Node node){
+
+        if (node == null) 
+            return;
+        if (node.leftChild == null) {      // leaf
+            System.out.print(node.data);
+        } else {                           // operator
+            System.out.print("(");
+            printNode(node.leftChild);
+            System.out.print(" " + node.data + " ");
+            printNode(node.rightChild);
+            System.out.print(")");
+        }
     }
 
     // Crossover, prevent a corssover occuring often in the higher levels of a tree.
@@ -174,9 +203,9 @@ public class Tree {
     // - Keeping track of depth when creating an individual
 
     public static void main(String[] args) {
-        Tree t = new Tree();
-        t.generate_individual(3);
-        t.print();
+    Tree t = new Tree();
+    t.generate_individual(3);
+    t.print();
     }
 }
 
