@@ -20,6 +20,15 @@ public class PrintCSV {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Tree a = new Tree();
+        a.generate_individual(3);
+        Tree b = a.newTree();
+        a.print();
+        b.print();           
+        b.root.leftChild.data = '9';   
+        a.print();              
+        b.print();               
     }
 }
 

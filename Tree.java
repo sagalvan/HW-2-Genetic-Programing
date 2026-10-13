@@ -111,36 +111,62 @@ public class Tree {
 
     // Mutate, which happens in lower level nodes
     //Working on this logic...
-    public Tree mutate(Node node){
-        double chanceMutate = Math.random();
-        if (chanceMutate >= 0.2){
+  // Counts the nodes in the subtree 
+    private int size(Node node) {
+     if (node == null) {
+        return 0;
+     }
+    return 1 + size(node.leftChild) + size(node.rightChild);
+    }
 
+// Returns a new tree with one randomly chosen node replaced by a new random subtree
+    public Tree mutate() {
+        Tree result = new Tree();
+        if (root == null) {
+            return result;
         }
-        
+//rand is the number of the node to replace. nextInt gives the range of values
+
+        int rand = random.nextInt(size(root));  
+        int[] counter = {0};                  
+
+        result.root = mutateNode(root, rand, counter);
+        return result;
+    }
+
+// Same job as buildCopy, except the nth node visited is replaced
+private Node mutateNode(Node node, int n, int[] counter) {
+
+    if (node == null) {
         return null;
     }
 
-    ///Creates a new tree to mutate/crossover 
-    
-    public void newTree(){
-        buildCopy(root);
-    }
+    int myIndex = counter[0];
+    counter[0]++;
 
+    //holding the original nodes data
+    char newData = node.data;            
 
-    public Tree buildCopy(Node node){
-
-        if (node == null) 
-            return;
-        if (node.leftChild == null) {      // leaf
-            System.out.print(node.data);
-        } else {                           // operator
-            System.out.print("(");
-            printNode(node.leftChild);
-            System.out.print(" " + node.data + " ");
-            printNode(node.rightChild);
-            System.out.print(")");
+    if (myIndex == n) {    
+    // this is the chosen node, change its data
+        if (node.leftChild == null) {    
+            do {
+                newData = randomTerminal();
+            } 
+            while (newData == node.data); //do i need this? can a mutation not cause a change if it gets replaces with the same value
+        } else {                         
+            do {
+                newData = randomFunction();
+            } while (newData == node.data); //again here...
         }
     }
+    Node newNode = new Node(newData);
+    newNode.leftChild  = mutateNode(node.leftChild, n, counter);
+    newNode.rightChild = mutateNode(node.rightChild, n, counter);
+    return newNode;
+}
+
+    
 
     // Crossover, prevent a corssover occuring often in the higher levels of a tree.
     public Tree crossover(Tree other) {
