@@ -108,6 +108,11 @@ public class Tree {
         }
     }
 
+    //can call evaluate with just the variable for the GP for simplicity purposes
+    public double evaluate(double variable) {
+        return evaluate(variable, root);
+    }
+
 
     // Mutate, which happens in lower level nodes
     //Working on this logic...

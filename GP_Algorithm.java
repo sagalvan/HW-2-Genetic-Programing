@@ -21,9 +21,28 @@ public class GP_Algorithm {
     //      Save the minimum fitness
     // }
 
-    public void generatePopulation(int size) {
-        for (int i = 0; i < size; i++) {
+    // Calculates the fitness -> lower = better
+    static double fitness(Tree tree, double[] x, double[] y) {
+        
+        double total = 0;
+
+        for (int i = 0; i < ; i++){
+            double predicted = tree.evaluate(x[i]);
+            double actual = y[i];
             
+            double squaredError = (predicted - actual) * (predicted - actual);
+             
+
+            if (difference == NaN){
+                return Optional.empty();
+            }
+
+            else{
+                total = total + difference;
+            }
+
         }
-    }
+        return total;
+
+     
 }
