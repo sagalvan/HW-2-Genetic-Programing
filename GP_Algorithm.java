@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.List;
+static Random random = new Random();
+
 public class GP_Algorithm {
     // Methods to implement
     // generate population - generate a number of individuals
@@ -17,23 +21,55 @@ public class GP_Algorithm {
         
         double total = 0;
 
-        for (int i = 0; i < ; i++){
+        for (int i = 0; i < dataSize; i++){
             double predicted = tree.evaluate(x[i]);
             double actual = y[i];
             
             double squaredError = (predicted - actual) * (predicted - actual);
              
+            //catches errors and returns a huge value so it is not possible for that fitness to win a tournament
 
-            if (difference == NaN){
-                return Optional.empty();
+            if (Double.isNaN(squaredError) || Double.isInfinite(squaredError)){
+                return Double.MAX_VALUE;
             }
 
             else{
-                total = total + difference;
+                total = total + squaredError;
+                int avg = total / dataSize;
             }
 
         }
-        return total;
+        return avg;
 
      
+}
+
+///picks individuals at random and returns the tree with the lowest fitness
+
+static Tree tournamentSelect(List<Tree> pop, double[] fitnesses, int tournamentSize){
+    
+    int winnerFitnessIndex = (random.nextInt(pop.size()));
+    double winnerFitness = fitnesses[winnerFitnessIndex];
+
+
+    for(int i = 1; i < tournamentSize; i++){
+
+        int challengerIndex = random.nextInt(pop.size());  
+        double challenger = fitnesses[challengerIndex]; 
+
+        if (fitnesses[winnerFitnessIndex] > fitnesses[challengerIndex]) {                            
+            winnerFitnessIndex = challengerIndex;
+        }
+    }
+    return pop.get(winnerFitnessIndex); 
+         
+    }
+    
+        
+    
+
+
+
+
+
 }
