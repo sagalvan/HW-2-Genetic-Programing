@@ -34,6 +34,14 @@ public class Tree {
 
      }
 
+     private int depth(Node node) {
+
+        if (node == null || node.leftChild == null) {
+            return 0; 
+        }  
+        return 1 + Math.max(depth(node.leftChild), depth(node.rightChild));
+    }
+
     // Add node to tree -> terminal values at leaf nodes and functions at everywhere else
 
     private Node buildNode(int depth) {
@@ -86,6 +94,18 @@ public class Tree {
         }
     }
 
+    // Builds an  copy of a subtree starting at the passed in node
+    private Node buildCopy(Node node) {
+        if (node == null) {
+            return null;
+    }
+
+        Node newNode = new Node(node.data);
+        newNode.leftChild  = buildCopy(node.leftChild);
+        newNode.rightChild = buildCopy(node.rightChild);
+        return newNode;
+    }
+
     //Plug in the value of x to evaluate the trees output
     public double evaluate(double variable, Node node){
         if (node.data == '+') {
@@ -113,115 +133,81 @@ public class Tree {
         return evaluate(variable, root);
     }
 
+    /// Walks down from start to a random node (called in mutate and crossover)
+    private Node pickNode(Node start) {
+        ///picks the max of 2 randomly generated values to try and avoid bias of lower depths
+        int randDepth = Math.max(random.nextInt(depth(start) + 1), random.nextInt(depth(start) + 1));
+        Node current = start;
 
-    // Mutate, which happens in lower level nodes
-    //Working on this logic...
-  // Counts the nodes in the subtree 
-    private int size(Node node) {
-     if (node == null) {
-        return 0;
-     }
-    return 1 + size(node.leftChild) + size(node.rightChild);
-    }
-
-// Returns a new tree with one randomly chosen node replaced by a new random subtree
-    public Tree mutate() {
-        Tree result = new Tree();
-        if (root == null) {
-            return result;
+        for (int i = 0; i < randDepth; i++) {
+            /// reached a leaf, can't go deeper
+            if (current.leftChild == null) {      
+                break;
+            }
+            ///1/2 of the time goes left and 1/2 of the time goes right
+            if (random.nextInt(2) == 0) {
+                current = current.leftChild;
+            } 
+            else {
+                current = current.rightChild;
+            }
         }
-//rand is the number of the node to replace. nextInt gives the range of values
-
-        int rand = random.nextInt(size(root));  
-        int[] counter = {0};                  
-
-        result.root = mutateNode(root, rand, counter);
-        return result;
+        return current;
     }
 
-// Same job as buildCopy, except the nth node visited is replaced
-private Node mutateNode(Node node, int n, int[] counter) {
 
-    if (node == null) {
-        return null;
-    }
+    /// Performs a mutation
+    public Tree mutateNode(){
 
-    int myIndex = counter[0];
-    counter[0]++;
+        ///make a copy, so the original is never touched
+        Tree temp = new Tree();
+        temp.root = buildCopy(root);
 
-    //holding the original nodes data
-    char newData = node.data;            
+        Node current = pickNode(temp.root);
 
-    if (myIndex == n) {    
-    // this is the chosen node, change its data
-        if (node.leftChild == null) {    
+        // /changes the data of the randomly selected node
+        char newData;
+        /// at a leaf, swap for a different terminal value
+        if (current.leftChild == null) {          
             do {
                 newData = randomTerminal();
             } 
-            while (newData == node.data); //do i need this? can a mutation not cause a change if it gets replaces with the same value
-        } else {                         
+            while (newData == current.data);
+        /// at an operator, swap for a different operator value
+        } 
+        else {                                  
             do {
                 newData = randomFunction();
-            } while (newData == node.data); //again here...
+            } 
+            while (newData == current.data);
         }
-    }
-    Node newNode = new Node(newData);
-    newNode.leftChild  = mutateNode(node.leftChild, n, counter);
-    newNode.rightChild = mutateNode(node.rightChild, n, counter);
-    return newNode;
-}
+        current.data = newData;
 
-    
+        return temp;
+    }
+
+        
 
     // Crossover, prevent a corssover occuring often in the higher levels of a tree.
     public Tree crossover(Tree other) {
-        Random rand = new Random();
-        // find breakpoint of tree 1 (parent node)
-        // get a random depth to find a node at
-        // save the root of this tree for our new tree
-        // save the node parent 
+        ///make a copy of the original tree
         Tree temp = new Tree();
-        temp.root = this.root;
+        temp.root = buildCopy(root);
 
-        int rand_depth = rand.nextInt(this.depth + 1);
+        ///pick a random node in the copy where the mutation will occur
+        Node current = pickNode(temp.root);
 
-        Node parent = temp.root;
-        for (int i = 0; i < rand_depth; i++) {
-            int choice = rand.nextInt(2);
-            if (choice == 0) {
-                if (parent.leftChild != null){
-                    parent = parent.leftChild;
-                }
-            }
-            else if (choice == 1) {
-                if (parent.rightChild != null){
-                    parent = parent.rightChild;
-                }
-            }
-        }
+        ///pick a random node in the other tree where the subtree we are taking will start
+        Node otherCurrent = pickNode(other.root);
 
-        // find breakpoint of tree 2 (child node)
-        // get a random depth to find a node at
-        int rand_depth2 = rand.nextInt(this.depth + 1);
+        ///copy the new subtree and then overwrite the chosen node in the original copy with it
+        Node otherCurrentCopy = buildCopy(otherCurrent);
 
-        Node child = other.root;
-        for (int i = 0; i < rand_depth2; i++) {
-            int choice = rand.nextInt(2);
-            if (choice == 0) {
-                if(child.leftChild != null) {
-                    child = child.leftChild;
-                }
-            }
-            else if (choice == 1) {
-                if(child.rightChild != null){
-                    child = child.rightChild;
-                }
-            }
-        }
-        
-        // connect child node to parent node
-        parent.leftChild = child;
-        return null;
+        current.data = otherCurrentCopy.data;
+        current.leftChild = otherCurrentCopy.leftChild;
+        current.rightChild = otherCurrentCopy.rightChild;
+
+        return temp;
     }
 
 
