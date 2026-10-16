@@ -41,15 +41,16 @@ public class PrintCSV {
 
         double[] trainX = new double[train.size()];
         double[] trainY = new double[train.size()];
+    
 
         for (int i = 0; i < train.size(); i++) {
             trainX[i] = train.get(i)[0];   // which column is x?
             trainY[i] = train.get(i)[1];   // which column is f(x)?
-
+        }
+        
         Tree t = new Tree();
         t.generate_individual(2);
         t.print();
         System.out.println(GP_Algorithm.fitness(t, trainX, trainY));
     }
-}
 }

@@ -1,8 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
-static Random random = new Random();
+import java.util.Random;
 
 public class GP_Algorithm {
+    static Random random = new Random();
     // Methods to implement
     // generate population - generate a number of individuals w/ different depths
     // selection - pick individuals for crossover, depends on fitness
@@ -24,6 +25,11 @@ public class GP_Algorithm {
     //      Evaluate the fitness of every individual
     //      Save the minimum fitness
     // }
+
+
+    ///Ways to combat bloating:
+    /// -creating a max node depth that can't be exceeded
+    /// -adjusting fitness scores to penalize individuals that exceed a size threshold
 
     // Calculates the fitness -> lower = better
     static double fitness(Tree tree, double[] x, double[] y) {
@@ -59,13 +65,11 @@ public class GP_Algorithm {
 static Tree tournamentSelect(List<Tree> pop, double[] fitnesses, int tournamentSize){
     
     int winnerFitnessIndex = (random.nextInt(pop.size()));
-    double winnerFitness = fitnesses[winnerFitnessIndex];
 
 
     for(int i = 1; i < tournamentSize; i++){
 
         int challengerIndex = random.nextInt(pop.size());  
-        double challenger = fitnesses[challengerIndex]; 
 
         if (fitnesses[winnerFitnessIndex] > fitnesses[challengerIndex]) {                            
             winnerFitnessIndex = challengerIndex;
