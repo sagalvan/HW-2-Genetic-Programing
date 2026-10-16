@@ -82,6 +82,11 @@ public class GP_Algorithm {
 
 
 
+
+    ///Ways to combat bloating:
+    /// -creating a max node depth that can't be exceeded
+    /// -adjusting fitness scores to penalize individuals that exceed a size threshold
+
     // Calculates the fitness -> lower = better
     static double fitness(Tree tree, double[] x, double[] y) {
 
@@ -93,7 +98,7 @@ public class GP_Algorithm {
             double actual = y[i];
 
             double squaredError = (predicted - actual) * (predicted - actual);
-
+             
             //catches errors and returns a huge value so it is not possible for that fitness to win a tournament
 
             if (Double.isNaN(squaredError) || Double.isInfinite(squaredError)){
@@ -130,3 +135,31 @@ public class GP_Algorithm {
     }
      
 }
+
+///picks individuals at random and returns the tree with the lowest fitness
+
+// static Tree tournamentSelect(List<Tree> pop, double[] fitnesses, int tournamentSize){
+    
+//     int winnerFitnessIndex = (random.nextInt(pop.size()));
+
+
+//     for(int i = 1; i < tournamentSize; i++){
+
+//         int challengerIndex = random.nextInt(pop.size());  
+
+//         if (fitnesses[winnerFitnessIndex] > fitnesses[challengerIndex]) {                            
+//             winnerFitnessIndex = challengerIndex;
+//         }
+//     }
+//     return pop.get(winnerFitnessIndex); 
+         
+//     }
+    
+        
+    
+
+
+
+
+
+// }
