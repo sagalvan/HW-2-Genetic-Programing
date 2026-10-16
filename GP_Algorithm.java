@@ -30,7 +30,8 @@ public class GP_Algorithm {
         
         double total = 0;
 
-        for (int i = 0; i < dataSize; i++){
+        for (int i = 0; i < x.length; i++){
+
             double predicted = tree.evaluate(x[i]);
             double actual = y[i];
             
@@ -42,12 +43,12 @@ public class GP_Algorithm {
                 return Double.MAX_VALUE;
             }
 
-            else{
-                total = total + squaredError;
-                int avg = total / dataSize;
-            }
+            
+            total = total + squaredError;  
 
         }
+
+        double avg = total / x.length;
         return avg;
 
      
