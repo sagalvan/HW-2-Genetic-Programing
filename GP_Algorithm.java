@@ -84,27 +84,30 @@ public class GP_Algorithm {
 
     // Calculates the fitness -> lower = better
     static double fitness(Tree tree, double[] x, double[] y) {
-        
+
         double total = 0;
 
-        for (int i = 0; i < ; i++){
+        for (int i = 0; i < x.length; i++){
+
             double predicted = tree.evaluate(x[i]);
             double actual = y[i];
-            
+
             double squaredError = (predicted - actual) * (predicted - actual);
-             
 
-            if (difference == NaN){
-                return Optional.empty();
+            //catches errors and returns a huge value so it is not possible for that fitness to win a tournament
+
+            if (Double.isNaN(squaredError) || Double.isInfinite(squaredError)){
+                return Double.MAX_VALUE;
             }
 
-            else{
-                total = total + difference;
-            }
+
+            total = total + squaredError;  
 
         }
-        return total;
-    }  
+
+        double avg = total / x.length;
+        return avg;
+    } 
     
     // Preform a fitness proportionate selection using a given population
     public Tree FPSelection(Map<Tree, Double> population){
