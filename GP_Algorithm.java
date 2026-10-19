@@ -21,10 +21,15 @@ public class GP_Algorithm {
      * @param y     The y values of a specified dataset.
      * @return      The optimal function of the specified dataset.
      */
+
+    ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
+    static final int maxDepth = 10;
+
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
         
-        Double minFitness = 0.0;
+        ///minFitness starts at the worst value or fitness
+        Double minFitness = Double.MAX_VALUE; 
         Tree minIndividual = null;
 
         for (Tree individual : population.keySet()) { // Calculate fitness of all individuals & save minimum
@@ -36,16 +41,18 @@ public class GP_Algorithm {
                 minIndividual = individual;
             }
         }
-
-        while (minFitness >= 0.01){ // Minimum fitness of some individual is > than 0.01
+        int generationsCounter = 0;
+        ///max generations at 1000? can vary this number may be interesting for experiment purposes but make it smaller for initial testing
+        while (minFitness >= 0.01 && generationsCounter <= 1000){ // Minimum fitness of some individual is > than 0.01
             Map<Tree, Double> newGeneration = new HashMap<Tree, Double>(); // Create new population list
             
             while(newGeneration.size() != size) { // loop through individuals for crossover or mutation
+            
                 Tree selectedTree = FPSelection(population); // Preform fitness proportionate selection 
 
                 Double rand = Math.random();
 
-                if (rand < 0.1) { // (1% chance of mutation), preform a mutation & add to population
+                if (rand < 0.01) { // (1% chance of mutation), preform a mutation & add to population
                     Tree mutate = selectedTree.mutateNode();
                     double fitness = fitness(mutate, x, y);
                     newGeneration.put(mutate, fitness);
@@ -59,6 +66,11 @@ public class GP_Algorithm {
                 else if (rand < 0.95) { // (95% chance of crossover), preform a crossover and add to population
                     Tree otherTree = FPSelection(population); // Select another tree for crossover
                     Tree crossover = selectedTree.crossover(otherTree);
+
+                    if (crossover.depth() > maxDepth) {
+                         continue;      // too deep: throw this child away and try again
+                    }
+
                     double fitness = fitness(crossover, x, y);
                     newGeneration.put(crossover, fitness);
 
@@ -70,6 +82,7 @@ public class GP_Algorithm {
             }
 
             population = newGeneration; //New generation is saved from operations
+            generationsCounter++;
         }
 
         return minIndividual;
@@ -141,20 +154,22 @@ public class GP_Algorithm {
     public Tree FPSelection(Map<Tree, Double> population){
         Double totalFitness = 0.0;
         for(Double fitness: population.values()) { // get the sum of the fitnesses in the population
-            totalFitness += fitness;
+            totalFitness = 1.0 / (1.0 + fitness);
         }
 
         Double rand = totalFitness * Math.random(); // randomly 'spin the wheel'
 
         Double sum = 0.0;
+        Tree last = null;
         for (Tree individual : population.keySet()){ // iterate through population until sum exceeds rand
-            sum += population.get(individual);
+            sum += 1.0 / (1.0 + population.get(individual));
+            last = individual;
             if (sum >= rand) {
                 return individual;
             }
         }
 
-        return null;
+        return last;
     }
      
 }
