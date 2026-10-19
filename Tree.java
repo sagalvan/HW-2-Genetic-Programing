@@ -34,7 +34,7 @@ public class Tree {
 
      }
 
-     private int depth(Node node) {
+    public int depth(Node node) {
 
         if (node == null || node.leftChild == null) {
             return 0; 

@@ -23,7 +23,12 @@ public class GP_Algorithm {
      */
 
     ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
-    static final int maxDepth = 10;
+    static final int MAX_DEPTH = 10;
+    static final int TOURNAMENT_SIZE = 3;
+    static final int GENERATION_MAX = 10000;
+    static final Double MUTATION_RATE = 0.05;
+    static final Double CROSSOVER_RATE = 0.90;
+
 
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
@@ -40,20 +45,19 @@ public class GP_Algorithm {
                 minIndividual = individual;
             }
         }
+
         int generationsCounter = 0;
         ///max generations at 1000? can vary this number may be interesting for experiment purposes but make it smaller for initial testing
-        while (minFitness >= 0.01 && generationsCounter <= 1000){ // Minimum fitness of some individual is > than 0.01
+        while (generationsCounter < GENERATION_MAX){ // Minimum fitness of some individual is > than 0.01
             Map<Tree, Double> newGeneration = new HashMap<Tree, Double>(); // Create new population list
             
             while(newGeneration.size() != size) { // loop through individuals for crossover or mutation
                 //Tree selectedTree = FPSelection(population); // Preform fitness proportionate selection
-                List<Tree> individualList = new ArrayList<>(population.keySet());
-                List<Double> valueList = new ArrayList<>(population.values());
-                Tree selectedTree = tournamentSelect(individualList, valueList, 2);
+                Tree selectedTree = tournamentSelect(population, TOURNAMENT_SIZE);
 
                 Double rand = Math.random();
 
-                if (rand < 0.01) { // (1% chance of mutation), preform a mutation & add to population
+                if (rand < MUTATION_RATE) { // (1% chance of mutation), preform a mutation & add to population
                     Tree mutate = selectedTree.mutateNode();
                     double fitness = fitness(mutate, x, y);
                     newGeneration.put(mutate, fitness);
@@ -64,12 +68,12 @@ public class GP_Algorithm {
                     }
                 }
         
-                else if (rand < 0.95) { // (95% chance of crossover), preform a crossover and add to population
+                else if (rand < CROSSOVER_RATE) { // (90% chance of crossover), preform a crossover and add to population
                     //Tree otherTree = FPSelection(population); // Select another tree for crossover
-                    Tree otherTree = tournamentSelect(individualList, valueList, 3);
+                    Tree otherTree = tournamentSelect(population, TOURNAMENT_SIZE);
                     Tree crossover = selectedTree.crossover(otherTree);
 
-                    if (crossover.depth() > maxDepth) {
+                    if (crossover.depth(crossover.root) > MAX_DEPTH) {
                          continue;      // too deep: throw this child away and try again
                     }
 
@@ -176,19 +180,22 @@ public class GP_Algorithm {
      
 
     //picks individuals at random and returns the tree with the lowest fitness
-    public Tree tournamentSelect(List<Tree> population, List<Double> fitnesses, int tournamentSize){
+    public Tree tournamentSelect(Map<Tree, Double> population, int tournamentSize){
+        List<Tree> individuals = new ArrayList<>(population.keySet());
+        List<Double> fitnesses = new ArrayList<>(population.values());
+        
         Random random = new Random();
-        int winnerFitnessIndex = (random.nextInt(population.size()));
+        int winnerFitnessIndex = (random.nextInt(individuals.size()));
 
         for(int i = 1; i < tournamentSize; i++){
 
-            int challengerIndex = random.nextInt(population.size());  
+            int challengerIndex = random.nextInt(individuals.size());  
 
             if (fitnesses.get(winnerFitnessIndex) > fitnesses.get(challengerIndex)) {                            
                 winnerFitnessIndex = challengerIndex;
             }
         }
-        return population.get(winnerFitnessIndex); 
+        return individuals.get(winnerFitnessIndex); 
             
     }
 }
