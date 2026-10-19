@@ -24,13 +24,13 @@ public class GP_Algorithm {
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
         
-        Double minFitness = 0.0;
+        Double minFitness = fitness(population.keySet().iterator().next(), x, y);
         Tree minIndividual = null;
 
         for (Tree individual : population.keySet()) { // Calculate fitness of all individuals & save minimum
             Double fitness = fitness(individual, x, y);
             population.put(individual, fitness);
-            
+
             if (fitness <= minFitness) { // find the minimum fitness in generation 0
                 minFitness = fitness;
                 minIndividual = individual;
@@ -41,7 +41,10 @@ public class GP_Algorithm {
             Map<Tree, Double> newGeneration = new HashMap<Tree, Double>(); // Create new population list
             
             while(newGeneration.size() != size) { // loop through individuals for crossover or mutation
-                Tree selectedTree = FPSelection(population); // Preform fitness proportionate selection 
+                //Tree selectedTree = FPSelection(population); // Preform fitness proportionate selection
+                List<Tree> individualList = new ArrayList<>(population.keySet());
+                List<Double> valueList = new ArrayList<>(population.values());
+                Tree selectedTree = tournamentSelect(individualList, valueList, 2);
 
                 Double rand = Math.random();
 
@@ -57,7 +60,8 @@ public class GP_Algorithm {
                 }
         
                 else if (rand < 0.95) { // (95% chance of crossover), preform a crossover and add to population
-                    Tree otherTree = FPSelection(population); // Select another tree for crossover
+                    //Tree otherTree = FPSelection(population); // Select another tree for crossover
+                    Tree otherTree = tournamentSelect(individualList, valueList, 3);
                     Tree crossover = selectedTree.crossover(otherTree);
                     double fitness = fitness(crossover, x, y);
                     newGeneration.put(crossover, fitness);
@@ -157,32 +161,22 @@ public class GP_Algorithm {
         return null;
     }
      
+
+    //picks individuals at random and returns the tree with the lowest fitness
+    public Tree tournamentSelect(List<Tree> population, List<Double> fitnesses, int tournamentSize){
+        Random random = new Random();
+        int winnerFitnessIndex = (random.nextInt(population.size()));
+
+        for(int i = 1; i < tournamentSize; i++){
+
+            int challengerIndex = random.nextInt(population.size());  
+
+            if (fitnesses.get(winnerFitnessIndex) > fitnesses.get(challengerIndex)) {                            
+                winnerFitnessIndex = challengerIndex;
+            }
+        }
+        return population.get(winnerFitnessIndex); 
+            
+    }
 }
 
-///picks individuals at random and returns the tree with the lowest fitness
-
-// static Tree tournamentSelect(List<Tree> pop, double[] fitnesses, int tournamentSize){
-    
-//     int winnerFitnessIndex = (random.nextInt(pop.size()));
-
-
-//     for(int i = 1; i < tournamentSize; i++){
-
-//         int challengerIndex = random.nextInt(pop.size());  
-
-//         if (fitnesses[winnerFitnessIndex] > fitnesses[challengerIndex]) {                            
-//             winnerFitnessIndex = challengerIndex;
-//         }
-//     }
-//     return pop.get(winnerFitnessIndex); 
-         
-//     }
-    
-        
-    
-
-
-
-
-
-// }
