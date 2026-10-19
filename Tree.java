@@ -42,6 +42,11 @@ public class Tree {
         return 1 + Math.max(depth(node.leftChild), depth(node.rightChild));
     }
 
+    
+    public int depth() {
+        return depth(root);
+    }
+
     // Add node to tree -> terminal values at leaf nodes and functions at everywhere else
 
     private Node buildNode(int depth) {
