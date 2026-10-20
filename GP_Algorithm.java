@@ -1,19 +1,15 @@
 /**
- * A program that implements the genetic programing algorithm
- * 
- * TODO: Ways to combat bloating
- * - creating a max node depth that can't be exceeded
- * - adjusting fitness scores to penalize individuals that exceed a size threshold
+ * A program that implements the genetic programing algorithm.
  * 
  * Authors: Samantha Galvan, Mali White
  */
+
 import java.util.*;
 
 public class GP_Algorithm {
-    ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
-    static final int MAX_DEPTH = 6;
+    static final int DEPTH_CAP = 6;
     static int TOURNAMENT_SIZE;
-    static final int GENERATION_MAX = 1000;
+    static final int GENERATION_MAX = 15000;
     static final Double MUTATION_RATE = 0.05;
     static final Double CROSSOVER_RATE = 0.90;
     static final double SIZE_WEIGHT = 0.01;
@@ -28,11 +24,6 @@ public class GP_Algorithm {
      * @param y     The y values of a specified dataset.
      * @return      The optimal function of the specified dataset.
      */
-
-    ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
-    static final int maxDepth = 10;
-
-
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
         TOURNAMENT_SIZE = size/8;
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
@@ -51,17 +42,15 @@ public class GP_Algorithm {
         }
 
         int generationsCounter = 0;
-        ///max generations at 1000? can vary this number may be interesting for experiment purposes but make it smaller for initial testing
         while (generationsCounter < GENERATION_MAX){ // Minimum fitness of some individual is > than 0.01
             Map<Tree, Double> newGeneration = new HashMap<Tree, Double>(); // Create new population list
 
             Map<Tree, Double> pygmyScores = new HashMap<Tree, Double>();
-                for (Tree t : population.keySet()) {
-                    pygmyScores.put(t, population.get(t) + SIZE_WEIGHT * t.size());
-                }
+            for (Tree t : population.keySet()) {
+                pygmyScores.put(t, population.get(t) + SIZE_WEIGHT * t.size());
+            }
             
             while(newGeneration.size() != size) { // loop through individuals for crossover or mutation
-                //Tree selectedTree = FPSelection(population); // Preform fitness proportionate selection
                 Tree selectedTree = tournamentSelect(population, TOURNAMENT_SIZE);
 
                 Double rand = Math.random();
@@ -78,17 +67,17 @@ public class GP_Algorithm {
                 }
         
                 else if (rand < CROSSOVER_RATE) { // (95% chance of crossover), preform a crossover and add to population
-                    Tree parent1 = selectedTree;               // civil servant wheel: plain error
+                    Tree parent1 = selectedTree; // civil servant wheel: plain error
                     Tree parent2 = tournamentSelect(pygmyScores, 5);   // pygmy wheel which is linear combo of error and size
 
                     if (parent1 == parent2) {
-                        continue;                              // need two different trees so break this iteration and try again
+                        continue; // need two different trees so break this iteration and try again
                     }
 
                     Tree crossover = parent1.crossover(parent2);
 
-                    if (crossover.depth() > MAX_DEPTH) {
-                        continue;                              // too deep, try again
+                    if (crossover.depth() > DEPTH_CAP) {
+                        continue; // too deep, try again
                     }
 
                     double fitness = fitness(crossover, x, y);
@@ -97,21 +86,7 @@ public class GP_Algorithm {
                     if (fitness <= minFitness) {
                         minFitness = fitness;
                         minIndividual = crossover;
-    }
-                   /// Tree otherTree = FPSelection(population); // Select another tree for crossover
-                   /// Tree crossover = selectedTree.crossover(otherTree);
-
-                   /// if (crossover.depth() > maxDepth) {
-                    ///     continue;      // too deep: throw this child away and try again
-                   /// }
-
-                    ///double fitness = fitness(crossover, x, y);
-                    ///newGeneration.put(crossover, fitness);
-
-                    ///if (fitness <= minFitness) {
-                    ///    minFitness = fitness;
-                    ///    minIndividual = crossover;
-    ///}
+                    }
                 }
             }
 
@@ -158,20 +133,17 @@ public class GP_Algorithm {
         double total = 0;
 
         for (int i = 0; i < x.length; i++){
-
             double predicted = tree.evaluate(x[i]);
             double actual = y[i];
 
             double squaredError = (predicted - actual) * (predicted - actual);
              
             //catches errors and returns a huge value so it is not possible for that fitness to win a tournament
-
             if (Double.isNaN(squaredError) || Double.isInfinite(squaredError)){
                 return Double.MAX_VALUE;
             }
 
             total = total + squaredError;  
-
         }
 
         double avg = total / x.length;
@@ -207,7 +179,13 @@ public class GP_Algorithm {
     }
      
 
-    //picks individuals at random and returns the tree with the lowest fitness
+    /**
+     * Picks individuals at random and returns the tree with the lowest fitness
+     * 
+     * @param population        Population map with individuals and their fitnesses
+     * @param tournamentSize    Desired tournament size
+     * @return                  Winner individual selected from tournament
+     */
     public Tree tournamentSelect(Map<Tree, Double> population, int tournamentSize){
         List<Tree> individuals = new ArrayList<>(population.keySet());
         List<Double> fitnesses = new ArrayList<>(population.values());

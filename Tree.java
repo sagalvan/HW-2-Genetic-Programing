@@ -2,16 +2,21 @@ import javax.swing.tree.TreeNode;
 import java.util.Random;
 
 class Node {
-        char data;
-        Node leftChild;
-        Node rightChild;
+    char data;
+    Node leftChild;
+    Node rightChild;
 
-        public Node(char data) {
-            this.data = data;
-            this.leftChild = null;
-            this.rightChild = null;
-        }
+    /**
+     * Constructs a Tree node with specified data.
+     * 
+     * @param data  a character data.
+     */
+    public Node(char data) {
+        this.data = data;
+        this.leftChild = null;
+        this.rightChild = null;
     }
+}
 
 public class Tree {
     Node root;
@@ -22,19 +27,44 @@ public class Tree {
     static char[] terminals = {'x', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     
 
+    /**
+     * Constructs an empty tree.
+     */
     public Tree(){
         this.root = null;
         this.depth = 0;   
-     }
+    }
 
-    // generate tree/individual with a specified depth
+ 
+    /**
+     * Generates a tree/individual with a specified depth
+     * 
+     * @param depth
+     */
     public void generate_individual(int depth) {
         this.depth = depth;
         root = buildNode(depth);
 
-     }
+    }
 
-     private int depth(Node node) {
+
+    /**
+     * Calculates the depth of this Tree.
+     * 
+     * @return  Integer depth of the Tree
+     */
+    public int depth() {
+        return depth(root);
+    }
+
+
+    /**
+     * Helper function for depth() to calculate the depth of a Tree.
+     * 
+     * @param node  Root note of a tree.
+     * @return      Integer depth of the Tree
+     */
+    private int depth(Node node) {
 
         if (node == null || node.leftChild == null) {
             return 0; 
@@ -42,25 +72,38 @@ public class Tree {
         return 1 + Math.max(depth(node.leftChild), depth(node.rightChild));
     }
 
-    
-    public int depth() {
-        return depth(root);
-    }
 
-   private int size(Node node) {
+    /**
+     * Calculates the number of nodes that are in a Tree.
+     * 
+     * @return  Integer number of nodes in the Tree.
+     */
+    public int size() {
+        return size(root);
+    } 
+
+
+    /**
+     * Helper function for size() to calculate the number of nodes in a Tree.
+     * 
+     * @param node  Root node of a Tree.
+     * @return      Integer number of nodes in the Tree.
+     */
+    private int size(Node node) {
         if (node == null) return 0;
         return 1 + size(node.leftChild) + size(node.rightChild);
     }
+  
 
-    public int size() {
-        return size(root);
-    }   
-
-    // Add node to tree -> terminal values at leaf nodes and functions at everywhere else
-
+    /**
+     * Adds a node to tree -> terminal values at leaf nodes and functions at everywhere else.
+     * 
+     * @param depth Depth of the Tree.
+     * @return      
+     */
     private Node buildNode(int depth) {
-
         double chanceRight = Math.random();
+
         if (depth == 0 || chanceRight < 0.3){
             return new Node (randomTerminal());
         }
@@ -70,30 +113,42 @@ public class Tree {
         node.leftChild = buildNode(depth - 1);
         node.rightChild = buildNode(depth - 1);
         return node;
-
-
-
     }
 
 
-    //Randomly picks function
+    /**
+     * Randomly selects a character from the function set.
+     * 
+     * @return  Selected function character.
+     */
     private char randomFunction(){
         return functions[random.nextInt(functions.length)];
     }
 
-    //Random picks terminal node 
+
+    /**
+     * Randomly selects a character from the terminal set.
+     * 
+     * @return  Selected terminal character
+     */ 
     private char randomTerminal(){
         return terminals[random.nextInt(terminals.length)];
     }
 
 
-    //Print out the finished tree
-
+    /**
+     * Prints the function represented by a Tree.
+     */
     public void print(){
-    printNode(root);
-    System.out.println();
+        printNode(root);
+        System.out.println();
     }
 
+    /**
+     * Helper function to print().
+     * 
+     * @param node  Root node of the Tree.
+     */
     private void printNode(Node node) {
         if (node == null) 
             return;
@@ -108,7 +163,13 @@ public class Tree {
         }
     }
 
-    // Builds an  copy of a subtree starting at the passed in node
+  
+    /**
+     * Builds a copy of a subtree starting at the passed in node.
+     * 
+     * @param node  Node to begin copied subtree
+     * @return      Copied subtree.
+     */
     private Node buildCopy(Node node) {
         if (node == null) {
             return null;
@@ -120,7 +181,25 @@ public class Tree {
         return newNode;
     }
 
-    //Plug in the value of x to evaluate the trees output
+    
+    /**
+     * Evaluates the function represented by the Tree with a given x value.
+     * 
+     * @param variable  A given x value.
+     * @return          The calculated value.
+     */
+    public double evaluate(double variable) {
+        return evaluate(variable, root);
+    }
+
+
+    /**
+     * A recursive helper function for evaluate(variable).
+     * 
+     * @param variable  A given x value.
+     * @param node      Root node of the Tree.
+     * @return          The calculated value.
+     */
     public double evaluate(double variable, Node node){
         if (node.data == '+') {
             return evaluate(variable, node.leftChild) + evaluate(variable, node.rightChild);
@@ -142,23 +221,25 @@ public class Tree {
         }
     }
 
-    //can call evaluate with just the variable for the GP for simplicity purposes
-    public double evaluate(double variable) {
-        return evaluate(variable, root);
-    }
 
-    /// Walks down from start to a random node (called in mutate and crossover)
+
+    /**
+     * A helper function to mutate() and crossover(). Traverses down from the starting node to a random node in the Tree.
+     * 
+     * @param start Starting node.
+     * @return      Selected random node.
+     */
     private Node pickNode(Node start) {
-        ///picks the max of 2 randomly generated values to try and avoid bias of lower depths
+        // picks the max of 2 randomly generated values to try and avoid bias of lower depths
         int randDepth = Math.max(random.nextInt(depth(start) + 1), random.nextInt(depth(start) + 1));
         Node current = start;
 
         for (int i = 0; i < randDepth; i++) {
-            /// reached a leaf, can't go deeper
+            // reached a leaf, can't go deeper
             if (current.leftChild == null) {      
                 break;
             }
-            ///1/2 of the time goes left and 1/2 of the time goes right
+            // 1/2 of the time goes left and 1/2 of the time goes right
             if (random.nextInt(2) == 0) {
                 current = current.leftChild;
             } 
@@ -170,24 +251,28 @@ public class Tree {
     }
 
 
-    /// Performs a mutation
+    /**
+     * Preforms a mutation on a given Tree. Does not edit the original Tree.
+     * 
+     * @return  Resulting mutated Tree from the original.
+     */
     public Tree mutateNode(){
 
-        ///make a copy, so the original is never touched
+        // make a copy, so the original is never touched
         Tree temp = new Tree();
         temp.root = buildCopy(root);
 
         Node current = pickNode(temp.root);
 
-        // /changes the data of the randomly selected node
+        // changes the data of the randomly selected node
         char newData;
-        /// at a leaf, swap for a different terminal value
+        // at a leaf, swap for a different terminal value
         if (current.leftChild == null) {          
             do {
                 newData = randomTerminal();
             } 
             while (newData == current.data);
-        /// at an operator, swap for a different operator value
+        // at an operator, swap for a different operator value
         } 
         else {                                  
             do {
@@ -201,8 +286,12 @@ public class Tree {
     }
 
         
-
-    // Crossover, prevent a corssover occuring often in the higher levels of a tree.
+    /**
+     * Preoforms a crossover with this Tree and another given Tree. Does not edit the original Tree.
+     * 
+     * @param other Other Tree that will be used in crossover.\
+     * @return      Resulting crossover Tree. 
+     */
     public Tree crossover(Tree other) {
         ///make a copy of the original tree
         Tree temp = new Tree();
@@ -222,21 +311,6 @@ public class Tree {
         current.rightChild = otherCurrentCopy.rightChild;
 
         return temp;
-    }
-
-
-
-    // Functions to consider
-    // - Searching with a specified depth: find a node at this depth
-    // public Node search(int depth) {
-    //     return null;
-    // }
-    // - Keeping track of depth when creating an individual
-
-    public static void main(String[] args) {
-    Tree t = new Tree();
-    t.generate_individual(3);
-    t.print();
     }
 }
 
