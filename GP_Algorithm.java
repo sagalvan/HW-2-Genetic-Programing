@@ -10,6 +10,12 @@
 import java.util.*;
 
 public class GP_Algorithm {
+    ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
+    static final int MAX_DEPTH = 6;
+    static final int TOURNAMENT_SIZE = 3;
+    static final int GENERATION_MAX = 1000;
+    static final Double MUTATION_RATE = 0.05;
+    static final Double CROSSOVER_RATE = 0.90;
 
     /**
      * A method that finds the optimal best fit function for a specified dataset using the genetic 
@@ -21,15 +27,6 @@ public class GP_Algorithm {
      * @param y     The y values of a specified dataset.
      * @return      The optimal function of the specified dataset.
      */
-
-    ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
-    static final int MAX_DEPTH = 10;
-    static final int TOURNAMENT_SIZE = 3;
-    static final int GENERATION_MAX = 10000;
-    static final Double MUTATION_RATE = 0.05;
-    static final Double CROSSOVER_RATE = 0.90;
-
-
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
         
