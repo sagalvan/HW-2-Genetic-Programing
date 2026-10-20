@@ -30,6 +30,8 @@ public class GP_Algorithm {
 
     ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
     static final int maxDepth = 10;
+    static final double SIZE_WEIGHT = 0.01;
+
 
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
@@ -75,11 +77,17 @@ public class GP_Algorithm {
                 }
         
                 else if (rand < 0.95) { // (95% chance of crossover), preform a crossover and add to population
-                    Tree otherTree = FPSelection(population); // Select another tree for crossover
-                    Tree crossover = selectedTree.crossover(otherTree);
+                    Tree parent1 = selectedTree;               // civil servant wheel: plain error
+                    Tree parent2 = FPSelection(pygmyScores);   // pygmy wheel which is linear combo of error and size
 
-                    if (crossover.depth() > maxDepth) {
-                         continue;      // too deep: throw this child away and try again
+                    if (parent1 == parent2) {
+                        continue;                              // need two different trees so break this iteration and try again
+                    }
+
+                    Tree crossover = parent1.crossover(parent2);
+
+                    if (crossover.depth() > MAX_DEPTH) {
+                        continue;                              // too deep, try again
                     }
 
                     double fitness = fitness(crossover, x, y);
@@ -89,6 +97,20 @@ public class GP_Algorithm {
                         minFitness = fitness;
                         minIndividual = crossover;
     }
+                   /// Tree otherTree = FPSelection(population); // Select another tree for crossover
+                   /// Tree crossover = selectedTree.crossover(otherTree);
+
+                   /// if (crossover.depth() > maxDepth) {
+                    ///     continue;      // too deep: throw this child away and try again
+                   /// }
+
+                    ///double fitness = fitness(crossover, x, y);
+                    ///newGeneration.put(crossover, fitness);
+
+                    ///if (fitness <= minFitness) {
+                    ///    minFitness = fitness;
+                    ///    minIndividual = crossover;
+    ///}
                 }
             }
 
