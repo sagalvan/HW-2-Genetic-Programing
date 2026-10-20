@@ -5,7 +5,7 @@ public class GP_Test {
 
     private static void returnsExactFitIndividual() {
         GP_Algorithm algorithm = new GP_Algorithm();
-        int populationSize = 10;
+        int populationSize = 20;
         int maxDepth = 5;
         double[] x = {-2.0, 0.0, 2.0};
         double[] y = {-4.0, 0.0, 4.0};

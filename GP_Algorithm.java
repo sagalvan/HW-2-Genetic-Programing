@@ -15,7 +15,7 @@ public class GP_Algorithm {
     static int TOURNAMENT_SIZE;
     static final int GENERATION_MAX = 1000;
     static final Double MUTATION_RATE = 0.05;
-    static final Double CROSSOVER_RATE = 0.95;
+    static final Double CROSSOVER_RATE = 0.90;
     static final double SIZE_WEIGHT = 0.01;
 
     /**
