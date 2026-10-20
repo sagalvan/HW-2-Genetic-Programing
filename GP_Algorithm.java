@@ -13,7 +13,7 @@ public class GP_Algorithm {
     ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
     static final int MAX_DEPTH = 6;
     static final int TOURNAMENT_SIZE = 3;
-    static final int GENERATION_MAX = 1000;
+    static final int GENERATION_MAX = 10000;
     static final Double MUTATION_RATE = 0.05;
     static final Double CROSSOVER_RATE = 0.95;
     static final double SIZE_WEIGHT = 0.01;

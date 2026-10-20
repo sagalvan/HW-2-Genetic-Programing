@@ -215,6 +215,17 @@ public class Tree {
         return temp;
     }
 
+    private int size(Node node) {
+        if (node == null) {
+            return 0;
+        }
+
+        return 1 + size(node.leftChild) + size(node.rightChild);
+    }
+
+    public int size() {
+        return size(root);
+    }
     // public static boolean isEqual(Tree I1, Tree I2) {
     //     return isEqualHelper(I1.root, I2.root);
     // }
