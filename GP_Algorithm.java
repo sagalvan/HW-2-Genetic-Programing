@@ -24,6 +24,11 @@ public class GP_Algorithm {
 
     ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
     static final int maxDepth = 10;
+    static final double SIZE_WEIGHT = 0.01;
+
+    //Two new lists to sort each tree after fitness is found to increase variation and help combat bloating
+    List<Tree> fitnessOrder = new ArrayList<>();
+    List<Tree> fitnessAndSizeOrder = new ArrayList<>();
 
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
@@ -36,6 +41,7 @@ public class GP_Algorithm {
             Double fitness = fitness(individual, x, y);
             population.put(individual, fitness);
             
+
             if (fitness <= minFitness) { // find the minimum fitness in generation 0
                 minFitness = fitness;
                 minIndividual = individual;
@@ -45,6 +51,11 @@ public class GP_Algorithm {
         ///max generations at 1000? can vary this number may be interesting for experiment purposes but make it smaller for initial testing
         while (minFitness >= 0.01 && generationsCounter <= 1000){ // Minimum fitness of some individual is > than 0.01
             Map<Tree, Double> newGeneration = new HashMap<Tree, Double>(); // Create new population list
+
+            Map<Tree, Double> pygmyScores = new HashMap<Tree, Double>();
+                for (Tree t : population.keySet()) {
+                    pygmyScores.put(t, population.get(t) + SIZE_WEIGHT * t.size());
+                }
             
             while(newGeneration.size() != size) { // loop through individuals for crossover or mutation
             
@@ -64,20 +75,26 @@ public class GP_Algorithm {
                 }
         
                 else if (rand < 0.95) { // (95% chance of crossover), preform a crossover and add to population
-                    Tree otherTree = FPSelection(population); // Select another tree for crossover
-                    Tree crossover = selectedTree.crossover(otherTree);
+                    Tree parent1 = selectedTree; // Select another tree for crossover
+                    Tree parent2 = FPSelection(pygmyScores); ///uses wheel roulette to pick fitness from pygmy list
 
-                    if (crossover.depth() > maxDepth) {
-                         continue;      // too deep: throw this child away and try again
+                    if (parent1 == parent2) {
+                       continue;      // breaks this iteration pick new parents if they are the same
+                    }
+
+                    Tree crossover = parent1.crossover(parent2);
+
+                    if (crossover.depth() > maxDepth){ //checks if its too big
+                        continue;
                     }
 
                     double fitness = fitness(crossover, x, y);
                     newGeneration.put(crossover, fitness);
 
-                    if (fitness <= minFitness) { // Check if the new fitness is smaller than the minimum
+                    if (fitness <= minFitness) {
                         minFitness = fitness;
                         minIndividual = crossover;
-                    }
+    }
                 }
             }
 
