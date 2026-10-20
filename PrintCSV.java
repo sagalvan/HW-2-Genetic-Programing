@@ -52,5 +52,7 @@ public class PrintCSV {
         t.generate_individual(2);
         t.print();
         System.out.println(GP_Algorithm.fitness(t, trainX, trainY));
+
+        
     }
 }

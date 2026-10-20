@@ -12,7 +12,7 @@ import java.util.*;
 public class GP_Algorithm {
     ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
     static final int MAX_DEPTH = 6;
-    static final int TOURNAMENT_SIZE = 3;
+    static int TOURNAMENT_SIZE;
     static final int GENERATION_MAX = 1000;
     static final Double MUTATION_RATE = 0.05;
     static final Double CROSSOVER_RATE = 0.90;
@@ -34,6 +34,7 @@ public class GP_Algorithm {
 
 
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
+        TOURNAMENT_SIZE = size/8;
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
         
         Double minFitness = fitness(population.keySet().iterator().next(), x, y);
@@ -78,7 +79,7 @@ public class GP_Algorithm {
         
                 else if (rand < 0.95) { // (95% chance of crossover), preform a crossover and add to population
                     Tree parent1 = selectedTree;               // civil servant wheel: plain error
-                    Tree parent2 = FPSelection(pygmyScores);   // pygmy wheel which is linear combo of error and size
+                    Tree parent2 = tournamentSelect(pygmyScores, 5);   // pygmy wheel which is linear combo of error and size
 
                     if (parent1 == parent2) {
                         continue;                              // need two different trees so break this iteration and try again
