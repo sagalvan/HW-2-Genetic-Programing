@@ -19,8 +19,8 @@ public class Tree {
 
     static Random random = new Random();
     static char[] functions = {'+', '-', '*', '/', 'l'};
-    
-    static char[] terminals = {'x', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    static int range = 5;
+    static char[] terminals = {'x', (char) (range + '0')};
     
 
     public Tree(){
@@ -84,6 +84,15 @@ public class Tree {
 
     //Random picks terminal node 
     private char randomTerminal(){
+        Random rand = new Random();
+        char terminal = terminals[random.nextInt(terminals.length)];
+        if (terminal != 'x') {
+            int range = terminal - '0';
+            int min = range * -1;
+            int max = range;
+            int randomNum = random.nextInt((max - min) + 1) + min;
+            return (char) (randomNum + '0');
+        }
         return terminals[random.nextInt(terminals.length)];
     }
 
