@@ -18,7 +18,8 @@ public class Tree {
     int depth;
 
     static Random random = new Random();
-    static char[] functions = {'+', '-', '*', '/'};
+    static char[] functions = {'+', '-', '*', '/', 'l'};
+    
     static char[] terminals = {'x', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     
 
@@ -34,7 +35,7 @@ public class Tree {
 
      }
 
-    public int depth(Node node) {
+     private int depth(Node node) {
 
         if (node == null || node.leftChild == null) {
             return 0; 
@@ -46,6 +47,15 @@ public class Tree {
     public int depth() {
         return depth(root);
     }
+
+   private int size(Node node) {
+        if (node == null) return 0;
+        return 1 + size(node.leftChild) + size(node.rightChild);
+    }
+
+    public int size() {
+        return size(root);
+    }   
 
     // Add node to tree -> terminal values at leaf nodes and functions at everywhere else
 
@@ -215,35 +225,6 @@ public class Tree {
         return temp;
     }
 
-    private int size(Node node) {
-        if (node == null) {
-            return 0;
-        }
-
-        return 1 + size(node.leftChild) + size(node.rightChild);
-    }
-
-    public int size() {
-        return size(root);
-    }
-    // public static boolean isEqual(Tree I1, Tree I2) {
-    //     return isEqualHelper(I1.root, I2.root);
-    // }
-
-    // private static boolean isEqualHelper(Node node1, Node node2) {
-    //     if (node1 == null && node2 == null) {
-    //         return true;
-    //     }
-
-    //     if (node1 == null || node2 == null) {
-    //         return false;
-    //     }     
-        
-    //     if (node1.data != node2.data) {
-    //         return false;
-    //     }
-    //     return isEqualHelper(node1.leftChild, node2.leftChild) && isEqualHelper(node1.rightChild, node2.rightChild);
-    // }
 
 
     // Functions to consider
