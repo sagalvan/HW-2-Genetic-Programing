@@ -10,6 +10,12 @@
 import java.util.*;
 
 public class GP_Algorithm {
+    ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
+    static final int MAX_DEPTH = 6;
+    static final int TOURNAMENT_SIZE = 3;
+    static final int GENERATION_MAX = 1000;
+    static final Double MUTATION_RATE = 0.05;
+    static final Double CROSSOVER_RATE = 0.90;
 
     /**
      * A method that finds the optimal best fit function for a specified dataset using the genetic 
@@ -24,32 +30,26 @@ public class GP_Algorithm {
 
     ///Max depth of a tree that can't be exceeded this can also be an interesting number to change
     static final int maxDepth = 10;
-    static final double SIZE_WEIGHT = 0.01;
-
-    //Two new lists to sort each tree after fitness is found to increase variation and help combat bloating
-    List<Tree> fitnessOrder = new ArrayList<>();
-    List<Tree> fitnessAndSizeOrder = new ArrayList<>();
 
     public Tree GPAlgorithm(int size, int depth, double[] x, double[] y) {
         Map<Tree, Double> population = generatePopulation(size, depth); // Generate generation 0
         
-        ///minFitness starts at the worst value or fitness
-        Double minFitness = Double.MAX_VALUE; 
+        Double minFitness = fitness(population.keySet().iterator().next(), x, y);
         Tree minIndividual = null;
 
         for (Tree individual : population.keySet()) { // Calculate fitness of all individuals & save minimum
             Double fitness = fitness(individual, x, y);
             population.put(individual, fitness);
             
-
             if (fitness <= minFitness) { // find the minimum fitness in generation 0
                 minFitness = fitness;
                 minIndividual = individual;
             }
         }
+
         int generationsCounter = 0;
         ///max generations at 1000? can vary this number may be interesting for experiment purposes but make it smaller for initial testing
-        while (minFitness >= 0.01 && generationsCounter <= 1000){ // Minimum fitness of some individual is > than 0.01
+        while (generationsCounter < GENERATION_MAX){ // Minimum fitness of some individual is > than 0.01
             Map<Tree, Double> newGeneration = new HashMap<Tree, Double>(); // Create new population list
 
             Map<Tree, Double> pygmyScores = new HashMap<Tree, Double>();
@@ -58,12 +58,12 @@ public class GP_Algorithm {
                 }
             
             while(newGeneration.size() != size) { // loop through individuals for crossover or mutation
-            
-                Tree selectedTree = FPSelection(population); // Preform fitness proportionate selection 
+                //Tree selectedTree = FPSelection(population); // Preform fitness proportionate selection
+                Tree selectedTree = tournamentSelect(population, TOURNAMENT_SIZE);
 
                 Double rand = Math.random();
 
-                if (rand < 0.01) { // (1% chance of mutation), preform a mutation & add to population
+                if (rand < MUTATION_RATE) { // (1% chance of mutation), preform a mutation & add to population
                     Tree mutate = selectedTree.mutateNode();
                     double fitness = fitness(mutate, x, y);
                     newGeneration.put(mutate, fitness);
@@ -75,17 +75,11 @@ public class GP_Algorithm {
                 }
         
                 else if (rand < 0.95) { // (95% chance of crossover), preform a crossover and add to population
-                    Tree parent1 = selectedTree; // Select another tree for crossover
-                    Tree parent2 = FPSelection(pygmyScores); ///uses wheel roulette to pick fitness from pygmy list
+                    Tree otherTree = FPSelection(population); // Select another tree for crossover
+                    Tree crossover = selectedTree.crossover(otherTree);
 
-                    if (parent1 == parent2) {
-                       continue;      // breaks this iteration pick new parents if they are the same
-                    }
-
-                    Tree crossover = parent1.crossover(parent2);
-
-                    if (crossover.depth() > maxDepth){ //checks if its too big
-                        continue;
+                    if (crossover.depth() > maxDepth) {
+                         continue;      // too deep: throw this child away and try again
                     }
 
                     double fitness = fitness(crossover, x, y);
@@ -189,32 +183,25 @@ public class GP_Algorithm {
         return last;
     }
      
+
+    //picks individuals at random and returns the tree with the lowest fitness
+    public Tree tournamentSelect(Map<Tree, Double> population, int tournamentSize){
+        List<Tree> individuals = new ArrayList<>(population.keySet());
+        List<Double> fitnesses = new ArrayList<>(population.values());
+        
+        Random random = new Random();
+        int winnerFitnessIndex = (random.nextInt(individuals.size()));
+
+        for(int i = 1; i < tournamentSize; i++){
+
+            int challengerIndex = random.nextInt(individuals.size());  
+
+            if (fitnesses.get(winnerFitnessIndex) > fitnesses.get(challengerIndex)) {                            
+                winnerFitnessIndex = challengerIndex;
+            }
+        }
+        return individuals.get(winnerFitnessIndex); 
+            
+    }
 }
 
-///picks individuals at random and returns the tree with the lowest fitness
-
-// static Tree tournamentSelect(List<Tree> pop, double[] fitnesses, int tournamentSize){
-    
-//     int winnerFitnessIndex = (random.nextInt(pop.size()));
-
-
-//     for(int i = 1; i < tournamentSize; i++){
-
-//         int challengerIndex = random.nextInt(pop.size());  
-
-//         if (fitnesses[winnerFitnessIndex] > fitnesses[challengerIndex]) {                            
-//             winnerFitnessIndex = challengerIndex;
-//         }
-//     }
-//     return pop.get(winnerFitnessIndex); 
-         
-//     }
-    
-        
-    
-
-
-
-
-
-// }

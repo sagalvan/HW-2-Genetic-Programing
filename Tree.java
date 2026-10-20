@@ -34,7 +34,7 @@ public class Tree {
 
      }
 
-     private int depth(Node node) {
+    public int depth(Node node) {
 
         if (node == null || node.leftChild == null) {
             return 0; 
@@ -215,6 +215,24 @@ public class Tree {
         return temp;
     }
 
+    // public static boolean isEqual(Tree I1, Tree I2) {
+    //     return isEqualHelper(I1.root, I2.root);
+    // }
+
+    // private static boolean isEqualHelper(Node node1, Node node2) {
+    //     if (node1 == null && node2 == null) {
+    //         return true;
+    //     }
+
+    //     if (node1 == null || node2 == null) {
+    //         return false;
+    //     }     
+        
+    //     if (node1.data != node2.data) {
+    //         return false;
+    //     }
+    //     return isEqualHelper(node1.leftChild, node2.leftChild) && isEqualHelper(node1.rightChild, node2.rightChild);
+    // }
 
 
     // Functions to consider
