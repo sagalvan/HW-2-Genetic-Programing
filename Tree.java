@@ -23,7 +23,7 @@ public class Tree {
     int depth;
 
     static Random random = new Random();
-    static char[] functions = {'+', '-', '*', '/'}; // 'l'
+    static char[] functions = {'+', '-', '*', '/'};
     static char[] terminals = {'x', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
     
 

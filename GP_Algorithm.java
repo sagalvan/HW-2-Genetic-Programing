@@ -9,7 +9,7 @@ import java.util.*;
 public class GP_Algorithm {
     static final int DEPTH_CAP = 6;
     static int TOURNAMENT_SIZE;
-    static final int GENERATION_MAX = 15000;
+    static final int GENERATION_MAX = 10000;
     static final Double MUTATION_RATE = 0.05;
     static final Double CROSSOVER_RATE = 0.90;
     static final double SIZE_WEIGHT = 0.01;
