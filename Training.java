@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class PrintCSV {
+public class Training {
     /**
      * Loads CSV data from a specified CSV file.
      * 
@@ -104,11 +104,9 @@ public class PrintCSV {
         
         int populationSize = 20;
         int maxDepth = 6;
-        double[] x = {-0.66, 2.99, 2.65, -1.72, 4.33, 1.94, -1.02, 0.05, -1.77};
-        double[] y = {18.37, 5.00, 5.12, 27.31, 6.76, 6.13, 21.17, 13.73, 27.78};
         int numRuns = 30;
 
-        Tree testTree = trainAlgorithm(numRuns, populationSize, maxDepth, x, y);
+        Tree testTree = trainAlgorithm(numRuns, populationSize, maxDepth, trainX, trainY);
 
         System.out.print("Test Tree: ");
         testTree.print();
