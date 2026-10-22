@@ -1,3 +1,8 @@
+/**
+ * A program that trains a genetic programing algorithm using Dataset 2.
+ * 
+ * @author Mali White, Samantha Galvan
+ */
 import java.io.*;
 import java.util.*;
 
@@ -114,9 +119,9 @@ public class Training2 {
             trainFX[i] = train.get(i)[3]; 
         }
         
-        int populationSize = 20;
+        int populationSize = 100;
         int maxDepth = 6;
-        int numRuns = 30;
+        int numRuns = 50;
 
         double[] x = {9609691, 9383433, 7537404, 2501726, 2020688};
         double[] y = {2256113, 8226381, 128622, 2662524, 5365951};
@@ -124,8 +129,8 @@ public class Training2 {
         double[] fx = {141.56, 465.22, 63.79, 6.84, 30.78};
 
 
-        //Tree2 testTree = trainAlgorithm(numRuns, populationSize, maxDepth, trainX, trainY, trainZ, trainFX);
-        Tree2 testTree = trainAlgorithm(numRuns, populationSize, maxDepth, x, y, z, fx);
+        Tree2 testTree = trainAlgorithm(numRuns, populationSize, maxDepth, trainX, trainY, trainZ, trainFX);
+        //Tree2 testTree = trainAlgorithm(numRuns, populationSize, maxDepth, x, y, z, fx);
 
         System.out.print("Test Tree: ");
         testTree.print();

@@ -1,3 +1,8 @@
+/**
+ * A program that trains a genetic programing algorithm using Dataset 1.
+ * 
+ * @author Mali White, Samantha Galvan
+ */
 import java.io.*;
 import java.util.*;
 

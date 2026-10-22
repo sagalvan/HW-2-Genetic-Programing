@@ -1,7 +1,7 @@
 /**
- * A program that implements the genetic programing algorithm.
+ * A program that implements the genetic programing algorithm for Dataset 1.
  * 
- * Authors: Samantha Galvan, Mali White
+ * @author Samantha Galvan, Mali White
  */
 
 import java.util.*;

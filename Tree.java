@@ -1,4 +1,8 @@
-import javax.swing.tree.TreeNode;
+/**
+ * A class for Tree objects and their functions. For Dataset 1.
+ * 
+ * @author Mali White, Samantha Galvan
+ */
 import java.util.Random;
 
 class Node {

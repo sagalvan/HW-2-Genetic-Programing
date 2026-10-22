@@ -1,3 +1,8 @@
+/**
+ * A class for Tree objects and their functions. For Dataset 2.
+ * 
+ * @author Mali White, Samantha Galvan
+ */
 import java.util.Random;
 
 class Node2 {
